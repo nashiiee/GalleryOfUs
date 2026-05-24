@@ -1,0 +1,495 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0f0e0c;
+  --bg2:      #161410;
+  --wall:     #1a1814;
+  --gold:     #c9a84c;
+  --gold2:    #e6c97a;
+  --gold-dim: #7a6030;
+  --ivory:    #f0e8d8;
+  --ivory2:   #c8bca8;
+  --ivory3:   #8a7f70;
+  --frame:    #3a3020;
+  --frame2:   #2a2418;
+  --accent:   #8b1a1a;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'EB Garamond', serif;
+  background: var(--bg);
+  color: var(--ivory);
+  min-height: 100vh;
+  cursor: default;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.55;
+}
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: museumReveal 0.8s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes museumReveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════
+   MUSEUM HEADER
+══════════════════════════════════ */
+.museum-header {
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+  border-bottom: 1px solid rgba(201,168,76,0.18);
+  position: relative;
+}
+.museum-header::before,
+.museum-header::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  width: min(500px, 80%);
+}
+.museum-header::before { top: 0; }
+.museum-header::after  { bottom: 0; }
+
+.header-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+.header-ornament span {
+  display: block;
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+.header-ornament span:last-child {
+  background: linear-gradient(to left, transparent, var(--gold-dim));
+}
+.header-ornament svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--gold);
+  opacity: 0.8;
+}
+
+.museum-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 0.9rem;
+}
+.museum-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  color: var(--ivory);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-shadow: 0 0 60px rgba(201,168,76,0.12);
+}
+.museum-subtitle {
+  margin-top: 0.8rem;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ivory3);
+  letter-spacing: 0.04em;
+}
+
+/* ══════════════════════════════════
+   COLLECTION NAV BAR
+══════════════════════════════════ */
+.collection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+.collection-bar .col-left {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+.collection-bar .col-right {
+  font-size: 0.82rem;
+  color: var(--ivory3);
+  font-style: italic;
+}
+
+/* ══════════════════════════════════
+   GALLERY WALL
+══════════════════════════════════ */
+.gallery-wall {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 3rem 6rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5rem 2.5rem;
+}
+
+/* Staggered vertical offset for museum wall feel */
+.gallery-grid .exhibit:nth-child(3n+2) { margin-top: 2.5rem; }
+.gallery-grid .exhibit:nth-child(3n+3) { margin-top: 1rem; }
+
+.exhibit {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* THE FRAME */
+.frame-outer {
+  position: relative;
+  width: 100%;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, #5a4a20 0%, #c9a84c 20%, #3a2e10 40%, #e6c97a 50%, #3a2e10 60%, #c9a84c 80%, #5a4a20 100%);
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 1px #1a1408,
+    0 20px 60px rgba(0,0,0,0.7),
+    0 4px 12px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(230,201,122,0.3);
+  transition: box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.exhibit:hover .frame-outer {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px #1a1408,
+    0 30px 80px rgba(0,0,0,0.8),
+    0 8px 20px rgba(0,0,0,0.5),
+    0 0 40px rgba(201,168,76,0.08),
+    inset 0 1px 0 rgba(230,201,122,0.3);
+}
+
+.frame-inner {
+  position: relative;
+  overflow: hidden;
+  background: #0a0a08;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.8);
+}
+.frame-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(0,0,0,0.2) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.frame-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 125%;
+  overflow: hidden;
+}
+.gallery-grid .exhibit:nth-child(4n+1) .frame-img-wrap { padding-bottom: 110%; }
+.gallery-grid .exhibit:nth-child(4n+3) .frame-img-wrap { padding-bottom: 140%; }
+
+.frame-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease;
+  filter: sepia(15%) brightness(0.88) contrast(1.05);
+}
+.exhibit:hover .frame-img {
+  transform: scale(1.04);
+  filter: sepia(5%) brightness(0.95) contrast(1.02);
+}
+
+/* SPOTLIGHT EFFECT */
+.frame-spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,220,0.06) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+.exhibit:hover .frame-spotlight { opacity: 1; }
+
+/* HOVER VIEW PROMPT */
+.frame-view-prompt {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0);
+  transition: background 0.4s ease;
+  z-index: 4;
+}
+.exhibit:hover .frame-view-prompt { background: rgba(0,0,0,0.25); }
+.view-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  border: 1px solid rgba(201,168,76,0.6);
+  padding: 0.45rem 1rem;
+  background: rgba(15,14,12,0.75);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.exhibit:hover .view-badge { opacity: 1; transform: translateY(0); }
+
+/* MUSEUM PLACARD */
+.placard {
+  margin-top: 1.1rem;
+  text-align: center;
+  padding: 0 0.5rem;
+  width: 100%;
+}
+.placard-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.35em;
+  color: var(--gold-dim);
+  margin-bottom: 0.35rem;
+}
+.placard-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--ivory2);
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+.placard-date {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--ivory3);
+}
+
+/* ══════════════════════════════════
+   DETAIL / EXHIBIT VIEW
+══════════════════════════════════ */
+#detail-page .museum-header { margin-bottom: 0; }
+
+.exhibit-room {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 2.5rem;
+  transition: color 0.2s, gap 0.3s;
+}
+.back-btn:hover { color: var(--gold2); gap: 0.9rem; }
+.back-btn svg { width: 14px; height: 14px; }
+
+/* EXHIBIT MAIN FRAME */
+.exhibit-main-frame {
+  position: relative;
+  padding: 18px;
+  background:
+    linear-gradient(135deg, #5a4a20 0%, #c9a84c 18%, #3a2e10 38%, #e6c97a 50%, #3a2e10 62%, #c9a84c 82%, #5a4a20 100%);
+  box-shadow:
+    0 0 0 1px #1a1408,
+    0 30px 100px rgba(0,0,0,0.8),
+    0 8px 24px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(230,201,122,0.3);
+  margin-bottom: 3rem;
+}
+.exhibit-main-inner {
+  position: relative;
+  overflow: hidden;
+  background: #0a0a08;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.8);
+}
+.exhibit-main-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%, rgba(0,0,0,0.15) 100%);
+  pointer-events: none;
+}
+.exhibit-main-img {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: cover;
+  display: block;
+  filter: sepia(10%) brightness(0.9) contrast(1.05);
+}
+
+/* SPOTLIGHT ON DETAIL */
+.exhibit-main-frame::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(255,255,220,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* WALL LABEL */
+.wall-label {
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 1.8rem;
+  margin-bottom: 2.5rem;
+}
+.wall-label-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.wall-label-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 400;
+  color: var(--ivory);
+  line-height: 1.2;
+  margin-bottom: 0.7rem;
+}
+.wall-label-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.wall-label-tag {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--ivory3);
+}
+.wall-label-tag strong {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--gold-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-right: 0.4rem;
+}
+
+/* CATALOG TEXT */
+.catalog-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.catalog-divider span {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(to right, var(--gold-dim), transparent);
+}
+.catalog-divider span:last-child {
+  background: linear-gradient(to left, var(--gold-dim), transparent);
+}
+.catalog-divider svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--gold-dim);
+  flex-shrink: 0;
+}
+
+.catalog-text {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.18rem;
+  line-height: 1.95;
+  color: var(--ivory2);
+  columns: 1;
+}
+.catalog-text p + p { margin-top: 1.2em; }
+.catalog-text p::first-letter {
+  font-family: 'Cinzel', serif;
+  font-size: 2.8rem;
+  line-height: 0.85;
+  float: left;
+  margin: 0.1em 0.1em 0 0;
+  color: var(--gold);
+}
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+.museum-footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid rgba(201,168,76,0.1);
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.4em;
+  color: var(--gold-dim);
+  opacity: 0.6;
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.8rem; }
+  .gallery-grid .exhibit:nth-child(3n+2) { margin-top: 0; }
+  .gallery-grid .exhibit:nth-child(3n+3) { margin-top: 0; }
+  .gallery-grid .exhibit:nth-child(2n+2) { margin-top: 2rem; }
+  .gallery-wall { padding: 3rem 1.5rem 5rem; }
+}
+@media (max-width: 560px) {
+  .gallery-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .gallery-grid .exhibit:nth-child(2n+2) { margin-top: 0; }
+  .collection-bar { padding: 0.8rem 1.5rem; flex-direction: column; gap: 0.3rem; text-align: center; }
+  .exhibit-room { padding: 2rem 1.2rem 5rem; }
+  .wall-label { padding-left: 1.2rem; }
+  .museum-header { padding: 2.5rem 1.5rem 2rem; }
+}
